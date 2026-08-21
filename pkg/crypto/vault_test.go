@@ -6,31 +6,48 @@ import (
 	"testing"
 )
 
-func TestVaultStoreAndLoad(t *testing.T) {
+func TestVault(t *testing.T) {
 	tmpDir := t.TempDir()
 	vaultPath := filepath.Join(tmpDir, "unipass.vault")
 	vault := NewVault(vaultPath)
 
-	masterKey := make([]byte, 32)
-	for i := range masterKey {
-		masterKey[i] = byte(i + 1)
+	key := make([]byte, 32)
+	for i := range key {
+		key[i] = byte(i + 1)
 	}
 
-	sensitiveData := []byte("secret_master_seed_hash_value")
-
-	// Test Store
-	if err := vault.StoreEncrypt(sensitiveData, masterKey); err != nil {
-		t.Fatalf("Vault store failed: %v", err)
+	tests := []struct {
+		name      string
+		data      []byte
+		key       []byte
+		wantErr   bool
+	}{
+		{"Valid data", []byte("secret"), key, false},
+		{"Empty data", []byte(""), key, false},
+		{"Large data", bytes.Repeat([]byte("A"), 1024*1024), key, false},
+		{"Invalid key length", []byte("secret"), []byte("short"), true},
 	}
 
-	// Test Load
-	decrypted, err := vault.LoadDecrypt(masterKey)
-	if err != nil {
-		t.Fatalf("Vault load failed: %v", err)
-	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := vault.StoreEncrypt(tt.data, tt.key)
+			if (err != nil) != tt.wantErr {
+				t.Fatalf("StoreEncrypt() error = %v, wantErr %v", err, tt.wantErr)
+			}
 
-	if !bytes.Equal(decrypted, sensitiveData) {
-		t.Errorf("Expected decrypted data %s, got %s", sensitiveData, decrypted)
+			if tt.wantErr {
+				return
+			}
+
+			decrypted, err := vault.LoadDecrypt(tt.key)
+			if err != nil {
+				t.Fatalf("LoadDecrypt() error = %v", err)
+			}
+
+			if !bytes.Equal(decrypted, tt.data) {
+				t.Errorf("Decrypted data does not match original")
+			}
+		})
 	}
 }
 
@@ -42,15 +59,5 @@ func TestZeroMemory(t *testing.T) {
 		if b != 0 {
 			t.Errorf("Expected memory byte to be 0, got %X", b)
 		}
-	}
-}
-
-func TestVaultInvalidKeyLength(t *testing.T) {
-	tmpDir := t.TempDir()
-	vault := NewVault(filepath.Join(tmpDir, "test.vault"))
-	invalidKey := []byte("short_key")
-
-	if err := vault.StoreEncrypt([]byte("test"), invalidKey); err == nil {
-		t.Errorf("Expected error for invalid key length, got nil")
 	}
 }

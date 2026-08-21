@@ -24,6 +24,27 @@ type nominatimResponse struct {
 	Lon string `json:"lon"`
 }
 
+// ManualGeoProvider implements the GeolocationProvider interface using manual coordinates
+type ManualGeoProvider struct {
+	City    string
+	Country string
+}
+
+// Resolve attempts to fetch manual coordinates
+func (p *ManualGeoProvider) Resolve() (*GeolocationResult, error) {
+	details, err := FetchCoordinates(p.City, p.Country)
+	if err != nil {
+		return &GeolocationResult{Error: err}, err
+	}
+	return &GeolocationResult{
+		Latitude:  details.Lat,
+		Longitude: details.Lon,
+		Source:    "manual",
+		IsManual:  true,
+		Error:     nil,
+	}, nil
+}
+
 // FetchCoordinates resolves latitude and longitude safely via Nominatim
 func FetchCoordinates(city, country string) (*LocationDetails, error) {
 	cityClean := strings.TrimSpace(city)

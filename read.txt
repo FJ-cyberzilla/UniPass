@@ -1,0 +1,565 @@
+Jump to Content
+
+API Reference
+
+JUMP TO
+LocationIQ - API reference
+Search / Forward Geocoding
+
+Free Form Query
+get
+Structured Geocoding
+get
+Postal Code Search
+get
+Reverse
+
+Reverse Geocoding
+get
+Autocomplete
+
+Autocomplete
+get
+Lookup
+
+Lookup
+get
+Routing
+
+Directions Service
+get
+Optimize Service
+get
+Matching Service
+get
+Matrix Service
+get
+Nearest Service
+get
+Nearby
+
+Nearby - Places (Public BETA)
+get
+Timezone
+
+Timezone
+get
+Balance
+
+Balance
+get
+Maps
+Static Maps
+Powered by 
+
+Free Form Query
+
+Copy Page
+get
+https://us1.locationiq.com/v1/search
+
+
+The Search API allows converting addresses, such as a street address, into geographic coordinates (latitude and longitude). These coordinates can serve various use-cases, from placing markers on a map to helping algorithms determine nearby bus stops. This process is also known as Forward Geocoding.
+
+Recent Requests
+Log in to see full request history
+Time	Status	User Agent	
+Make a request to see history.
+0 Requests This Month
+
+Query Params
+q
+string
+required
+Free-form query string to search for. Commas are optional, but improves performance by reducing the complexity of the search.
+
+format
+string
+enum
+Defaults to xml
+Output Format. Defaults to xml.
+
+This version (v1) of our Reverse Geocoding API is compatible with OpenStreetMap's Nominatim Geocoder in both JSON & XML formats. However, all our enhancements such as additional datasets and algorithms are supported only in json or xmlv1.1 format options.
+
+
+json
+Allowed:
+
+xml
+
+json
+
+xmlv1.1
+addressdetails
+integer
+enum
+Defaults to 0
+Include a breakdown of the address of this result into elements. Defaults to 0.
+
+
+Allowed:
+
+0
+
+1
+statecode
+integer
+enum
+Defaults to 0
+Adds state or province code when available to the state_code key inside the address object when available. Defaults to 0.
+
+
+Allowed:
+
+0
+
+1
+viewbox
+string
+The preferred area to find search results. Any two corner points of the box - max_lon,max_lat,min_lon,min_lat or min_lon,min_lat,max_lon,max_lat - are accepted in any order as long as they span a real box. To restrict results to those within the viewbox, use along with the bounded option.
+
+bounded
+integer
+enum
+Restrict result to items contained within the bounds specified in the viewbox parameter. Defaults to 0.
+
+
+Allowed:
+
+0
+
+1
+limit
+integer
+1 to 50
+Limit the number of returned results. Accepted value: 1 to 50. Defaults to 10.
+
+accept-language
+string
+Defaults to en
+Preferred language order for showing search results, overrides the value specified in the Accept-Language HTTP header. Defaults to en.
+
+To use native language for the response when available, use accept-language=native.
+
+Either uses standard rfc2616 accept-language string or a simple comma separated list of language codes.
+
+countrycodes
+string
+Limit search results to a specific country or a comma-separated list of countries. Should be the ISO 3166-1 alpha-2 code(s).
+
+normalizeaddress
+integer
+enum
+Defaults to 0
+Makes parsing of the address object easier by returning a predictable and defined list of elements. Defaults to 0 for backward compatibility. We recommend setting this to 1 for new projects.
+
+Element Name	Description
+name	House name or Point of Interest (POI) such as a Cafe or School
+house_number	House or Building number
+road	Roads, Highways, Freeways, Motorways
+neighbourhood	Neighbourhoods, Allotments, Quarters, Communities
+suburb	Suburbs, Subdivisions
+island	Islands, Islets
+city	Cities, Towns, Villages, Municipalities, Districts, Boroughs, Hamlets
+county	Counties
+state	States, Provinces, Regions, State Districts
+state_code	State or Province Code
+postcode	Postal Codes, Zipcodes
+country	Countries, Nation-states
+country_code	Country Code - 2 letter (ISO 3166-1 alpha-2)
+
+Allowed:
+
+0
+
+1
+normalizecity
+integer
+enum
+Defaults to 0
+For responses with no city value in the address section, the next available element in this order - city_district, locality, town, borough, municipality, village, hamlet, quarter, neighbourhood - from the address section will be normalized to city. Defaults to 0.
+
+
+Allowed:
+
+0
+
+1
+postaladdress
+integer
+enum
+Defaults to 0
+Returns address inside the postaladdress key, that is specifically formatted for each country. Currently supported for addresses in Belgium, Brazil, France, Germany, Greece, India, Ireland, Italy, Portugal, South Africa, Spain and United Kingdom. Defaults to 0.
+
+
+Allowed:
+
+0
+
+1
+matchquality
+integer
+enum
+Defaults to 0
+Returns additional information about quality of the result in a matchquality object. Defaults to 0.
+
+
+Allowed:
+
+0
+
+1
+source
+string
+If this parameter is not specified, LocationIQ uses multiple public and proprietary datasets to return results. If you'd like to restrict results to only OpenStreetMap data, you can set the value of this parameter to nom. This will only query our internal cluster of Nominatim servers, and return results. We may still apply some post-processing steps to these results though, so results may vary from the official Nominatim instance.
+
+normalizeimportance
+integer
+enum
+Defaults to 1
+When this parameter is absent or set to 1, the importance value(s) in the API response is limited to the range of 0 to 1. Values outside this range are adjusted to the nearest boundary (0 or 1). Setting normalizeimportance to 0 allows the importance value to be lower or higher than the specified range of 0 to 1. Defaults to 1
+
+
+Allowed:
+
+0
+
+1
+dedupe
+integer
+enum
+Defaults to 1
+Sometimes you have several objects in OSM identifying the same place or object in reality. The simplest case is a street being split in many different OSM ways due to different characteristics. Our Geocoder will attempt to detect such duplicates and only return one match; this is controlled by the dedupe parameter which defaults to 1. Since the limit is, for reasons of efficiency, enforced before and not after de-duplicating, it is possible that de-duplicating leaves you with less results than requested.
+
+
+Allowed:
+
+0
+
+1
+namedetails
+integer
+enum
+Defaults to 0
+Include a list of alternative names in the results. These may include language variants, references, operator and brand. Defaults to 0.
+
+
+Allowed:
+
+0
+
+1
+extratags
+integer
+enum
+Defaults to 0
+Include additional information in the result if available, e.g. wikipedia link, opening hours. Defaults to 0.
+
+
+Allowed:
+
+0
+
+1
+polygon_geojson
+integer
+enum
+Defaults to 0
+Output geometry of results in geojson format. Defaults to 0.
+
+
+Allowed:
+
+0
+
+1
+polygon_kml
+integer
+enum
+Defaults to 0
+Output geometry of results in kml format. Defaults to 0.
+
+
+Allowed:
+
+0
+
+1
+polygon_svg
+integer
+enum
+Defaults to 0
+Output geometry of results in svg format. Defaults to 0.
+
+
+Allowed:
+
+0
+
+1
+polygon_text
+integer
+enum
+Defaults to 0
+Output geometry of results as a WKT. Defaults to 0.
+
+
+Allowed:
+
+0
+
+1
+json_callback
+string
+Wrap json output in a callback function (JSONP) i.e. <string>(<json>). Only has an effect for JSON output formats.
+
+polygon_threshold
+number
+Defaults to 0
+When one of the polygon_* outputs is chosen, return a simplified version of the output geometry. The parameter describes the tolerance in degrees with which the geometry may differ from the original geometry. Topology is preserved in the geometry.
+
+Headers
+accept
+string
+enum
+Defaults to application/json
+Generated from available response content types
+
+
+application/json
+Allowed:
+
+application/json
+
+application/xml
+Responses
+
+200
+OK
+
+Response body
+
+application/json
+array of objects
+object
+place_id
+string
+required
+Unique identifier for the place.
+
+licence
+string
+required
+License information for the data.
+
+osm_type
+string
+Type of OpenStreetMap object.
+
+osm_id
+string
+Unique identifier for the OpenStreetMap object.
+
+lat
+string
+required
+Latitude of the location.
+
+lon
+string
+required
+Longitude of the location.
+
+display_name
+string
+required
+Formatted address for display.
+
+class
+string
+The category of this result
+
+type
+string
+The 'type' of the class/category of this result
+
+importance
+float
+Calculated importance of this result compared to the search query the user has provided. Ranges between 0 and 1.
+
+address
+address | address-normalized
+
+address
+
+address-normalized
+boundingbox
+array of strings
+required
+List of bounding box coordinates [min_lat, max_lat, min_lon, max_lon].
+
+namedetails
+object
+The dictionary with full list of available names including ref etc. Returned when namedetails=1 is set in the request.
+
+
+namedetails object
+extratags
+object
+The dictionary with additional useful tags like website or maxspeed. Returned when extratags=1 is set in the request.
+
+
+extratags object
+geojson
+object
+Output geometry of results in geojson format. Returned when polygon_geojson=1 is set in the request.
+
+
+geojson object
+geokml
+string
+Output geometry of results in kml format. Returned when polygon_kml=1 is set in the request.
+
+svg
+string
+Output geometry of results in svg format. Returned when polygon_svg=1 is set in the request.
+
+geotext
+string
+Output geometry of results as a WKT. Returned when polygon_text=1 is set in the request.
+
+icon
+string
+The URL of an icon representing this result, if applicable.
+
+matchquality
+object
+An additional object matchquality for every result in the response, containing the following elements: matchcode, matchtype, matchlevel.
+
+
+matchquality object
+postaladdress
+string
+Returns address specifically formatted for each country. Returned when postaladdress is set in the request
+
+
+400
+Bad Request
+
+
+401
+Unauthorized
+
+
+403
+The request has been made from an unauthorized domain.
+
+
+404
+No location or places were found for the given input.
+
+
+429
+Request exceeded the rate-limits set on your account.
+
+
+500
+Internal Server Error
+
+Language
+
+Shell
+
+Node
+
+Ruby
+
+PHP
+
+Python
+Credentials
+Query
+key
+
+URL
+
+https://us1.locationiq.com/v1
+/search
+1
+curl --request GET \
+2
+     --url https://us1.locationiq.com/v1/search \
+3
+     --header 'accept: application/json'
+
+Try It!
+
+1
+[
+2
+  {
+3
+    "place_id": "116136978",
+4
+    "licence": "https://locationiq.com/attribution",
+5
+    "osm_type": "way",
+6
+    "osm_id": "34633854",
+7
+    "boundingbox": [
+8
+      "40.7479255",
+9
+      "40.7489585",
+10
+      "-73.9865012",
+11
+      "-73.9848166"
+12
+    ],
+13
+    "lat": "40.74844205",
+14
+    "lon": "-73.98565890160751",
+15
+    "display_name": "Empire State Building, 350, 5th Avenue, Manhattan Community Board 5, Manhattan, New York County, New York, New York, 10001, USA",
+16
+    "class": "tourism",
+17
+    "type": "attraction",
+18
+    "importance": 0.8515868466874569,
+19
+    "icon": "https://locationiq.org/static/images/mapicons/poi_point_of_interest.p.20.png",
+20
+    "address": {
+21
+      "attraction": "Empire State Building",
+22
+      "house_number": "350",
+23
+      "road": "5th Avenue",
+24
+      "neighbourhood": "Manhattan Community Board 5",
+25
+      "suburb": "Manhattan",
+26
+      "county": "New York County",
+27
+      "city": "New York",
+28
+      "state": "New York",
+29
+      "postcode": "10001",
+30
+      "country": "United States of America",
+31
+      "country_code": "us"
+32
+    }
+33
+  }
+34
+]
+

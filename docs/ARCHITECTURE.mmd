@@ -18,36 +18,48 @@ graph TB
         HASH[SHA-256 Hashing]
     end
 
-    subgraph "Data & Entropy Layer"
-        GEO[Geo Package<br/>Geographic Data]
-        ASTRONOMY[Astronomical Calculations<br/>- Equation of Time<br/>- Solar Declination<br/>- Sun Elevation<br/>- Sun Azimuth<br/>- Effective Diameter]
-        LOCATION[Location Sources<br/>- GPS<br/>- IP<br/>- System]
-        VECTOR[Vector Engine<br/>Entropy Generation]
-        API[External APIs<br/>Nominatim]
+    subgraph "Core Geolocation Engine"
+        GEO_RESOLVER[Geo Resolver<br/>(Interface-based Cascade)]
+        GEO_PROVIDER[Geolocation Provider Interface]
+        GEO_TRUST[Trust Validator Interface]
     end
 
-    subgraph "External Data Sources"
-        EXTERNAL[External Services<br/>Geocoding APIs]
+    subgraph "Geolocation Sources"
+        GEO_GPS[GPS Provider]
+        GEO_IP[IP Provider]
+        GEO_NET[Network Provider]
+        GEO_SYS[System Provider]
+    end
+
+    subgraph "Entropy & Vector"
+        VECTOR[Vector Engine<br/>Entropy Generation]
+    end
+
+    subgraph "External Sources"
+        EXTERNAL[External Services<br/>IP Geocoding APIs]
     end
 
     UI --> CMD
     CMD --> CONFIG
     CMD --> GEN
     CMD --> UI
-    CONFIG --> GEO
-    GEO --> LOCATION
-    GEO --> ASTRONOMY
-    GEO --> VECTOR
-    LOCATION --> API
-    API --> EXTERNAL
+    CONFIG --> GEO_RESOLVER
+    GEO_RESOLVER --> GEO_PROVIDER
+    GEO_RESOLVER --> GEO_TRUST
+    GEO_PROVIDER --> GEO_GPS
+    GEO_PROVIDER --> GEO_IP
+    GEO_PROVIDER --> GEO_NET
+    GEO_PROVIDER --> GEO_SYS
+    GEO_IP --> EXTERNAL
     GEN --> VALIDATOR
     GEN --> HASH
-    GEN --> GEO
+    GEN --> GEO_RESOLVER
     GEN --> CRYPTO
     HEALTH --> CONFIG
     UI --> THEME
     UI --> BANNER
     UI --> HEALTH
+    GEO_RESOLVER --> VECTOR
 
     classDef primary fill:#2d3b4c,stroke:#61afef,color:#abb2bf
     classDef secondary fill:#3e4452,stroke:#98c379,color:#abb2bf
@@ -56,5 +68,5 @@ graph TB
     
     class CMD,CONFIG,GEN,CRYPTO,UI primary
     class VALIDATOR,HASH,THEME,BANNER,HEALTH secondary
-    class GEO,ASTRONOMY,LOCATION,VECTOR entropy
-    class API,EXTERNAL external
+    class GEO_RESOLVER,GEO_PROVIDER,GEO_TRUST,VECTOR entropy
+    class GEO_GPS,GEO_IP,GEO_NET,GEO_SYS,EXTERNAL external

@@ -1,56 +1,89 @@
 package config
 
 import (
-	"path/filepath"
 	"testing"
+	"time"
 )
 
-func TestConfigManager_SaveAndLoadWithVault(t *testing.T) {
+func TestConfigManager(t *testing.T) {
 	tmpDir := t.TempDir()
 	cm := NewConfigManager(tmpDir)
 
-	masterKey := make([]byte, 32)
-	for i := range masterKey {
-		masterKey[i] = byte(i + 42)
+	validKey := make([]byte, 32)
+	for i := range validKey {
+		validKey[i] = byte(i + 1)
 	}
 
-	initialState := &ConfigState{
-		Credentials: map[string]string{
-			"primary_seed":  "super_secret_seed_value",
-			"recovery_hash": "a1b2c3d4e5f6",
+	tests := []struct {
+		name      string
+		state     *ConfigState
+		key       []byte
+		wantErr   bool
+	}{
+		{
+			"Valid state save/load",
+			&ConfigState{
+				Credentials: map[string]string{"key": "value"},
+				City:        "London",
+			},
+			validKey,
+			false,
+		},
+		{
+			"Invalid key length",
+			&ConfigState{},
+			[]byte("short"),
+			true,
 		},
 	}
 
-	// 1. Test Save
-	if err := cm.SaveState(initialState, masterKey); err != nil {
-		t.Fatalf("Failed to save state with vault: %v", err)
-	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := cm.SaveState(tt.state, tt.key)
+			if (err != nil) != tt.wantErr {
+				t.Fatalf("SaveState() error = %v, wantErr %v", err, tt.wantErr)
+			}
 
-	// 2. Test Load
-	loadedState, err := cm.LoadState(masterKey)
-	if err != nil {
-		t.Fatalf("Failed to load state from vault: %v", err)
-	}
+			if tt.wantErr {
+				_, err = cm.LoadState(tt.key)
+				if err == nil {
+					t.Errorf("Expected error on LoadState with invalid key, got nil")
+				}
+				return
+			}
 
-	if loadedState.Credentials["primary_seed"] != "super_secret_seed_value" {
-		t.Errorf("Expected primary_seed 'super_secret_seed_value', got '%s'", loadedState.Credentials["primary_seed"])
-	}
+			loaded, err := cm.LoadState(tt.key)
+			if err != nil {
+				t.Fatalf("LoadState() error = %v", err)
+			}
 
-	if loadedState.LastHealthCheck.IsZero() {
-		t.Errorf("Expected non-zero LastHealthCheck timestamp")
+			if loaded.Credentials["key"] != tt.state.Credentials["key"] {
+				t.Errorf("Expected credentials %v, got %v", tt.state.Credentials, loaded.Credentials)
+			}
+			if loaded.LastHealthCheck.IsZero() {
+				t.Errorf("Expected non-zero LastHealthCheck")
+			}
+		})
 	}
 }
 
-func TestConfigManager_InvalidKey(t *testing.T) {
-	tmpDir := t.TempDir()
-	cm := NewConfigManager(filepath.Join(tmpDir, "invalid"))
-	shortKey := []byte("invalid_key")
-
-	if err := cm.SaveState(&ConfigState{}, shortKey); err == nil {
-		t.Errorf("Expected error for invalid key length on save, got nil")
+func TestEvaluateWeeklyHealthCheck(t *testing.T) {
+	now := time.Now()
+	tests := []struct {
+		name     string
+		last     time.Time
+		expected bool
+	}{
+		{"Zero time (first check)", time.Time{}, true},
+		{"Less than 7 days", now.Add(-6 * 24 * time.Hour), false},
+		{"More than 7 days", now.Add(-8 * 24 * time.Hour), true},
 	}
 
-	if _, err := cm.LoadState(shortKey); err == nil {
-		t.Errorf("Expected error for invalid key length on load, got nil")
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := EvaluateWeeklyHealthCheck(tt.last); got != tt.expected {
+				t.Errorf("EvaluateWeeklyHealthCheck() = %v, want %v", got, tt.expected)
+			}
+		})
 	}
 }

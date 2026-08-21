@@ -30,7 +30,7 @@ func TestValidateName(t *testing.T) {
 	}
 }
 
-func TestDualPasswordGeneration(t *testing.T) {
+func TestGeneratePassword(t *testing.T) {
 	loc := geo.LocationDetails{
 		Lat:           51.507446,
 		Lon:           -0.127765,
@@ -38,18 +38,31 @@ func TestDualPasswordGeneration(t *testing.T) {
 	}
 	timestamp := int64(1700000000000000)
 
-	shortPass := GenerateShort("Mina", loc, timestamp)
-	fullPass := GenerateFull("Mina", loc, timestamp)
-
-	if len(shortPass) != 12 {
-		t.Fatalf("Expected short password length 12, got %d", len(shortPass))
+	tests := []struct {
+		name      string
+		inputName string
+	}{
+		{"Valid Name", "Mina"},
+		{"Min Length", "ABCD"},
+		{"Max Length", "AlexanderMax"},
 	}
 
-	if len(fullPass) != 64 {
-		t.Fatalf("Expected full SHA-256 hash length 64, got %d", len(fullPass))
-	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			shortPass := GenerateShort(tt.inputName, loc, timestamp)
+			fullPass := GenerateFull(tt.inputName, loc, timestamp)
 
-	if fullPass[:12] != shortPass {
-		t.Fatal("Expected short password to be prefix of full hash")
+			if len(shortPass) != 12 {
+				t.Errorf("Expected short password length 12, got %d", len(shortPass))
+			}
+
+			if len(fullPass) != 64 {
+				t.Errorf("Expected full SHA-256 hash length 64, got %d", len(fullPass))
+			}
+
+			if fullPass[:12] != shortPass {
+				t.Errorf("Expected short password to be prefix of full hash")
+			}
+		})
 	}
 }

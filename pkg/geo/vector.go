@@ -5,6 +5,16 @@ import (
 	"math"
 )
 
+const (
+	DegreesInCircle = 360.0
+	CardinalSegments = 8
+	SegmentDegrees  = 45.0
+	SegmentOffset   = 22.5
+	DriftTimestampMod = 3600000
+	DriftScaleFactor  = 10000.0
+	LatLonMultiplier  = 111.0
+)
+
 // VectorEngine decides physical orientation state strategy
 type VectorEngine struct {
 	IsStationary bool
@@ -13,11 +23,11 @@ type VectorEngine struct {
 // CalculateOrientation converts raw heading into 8-point cardinal string
 func CalculateOrientation(degrees float64) string {
 	cardinals := []string{"N", "NE", "E", "SE", "S", "SW", "W", "NW"}
-	normalized := math.Mod(degrees, 360)
+	normalized := math.Mod(degrees, DegreesInCircle)
 	if normalized < 0 {
-		normalized += 360
+		normalized += DegreesInCircle
 	}
-	index := int(math.Floor((normalized+22.5)/45.0)) % 8
+	index := int(math.Floor((normalized+SegmentOffset)/SegmentDegrees)) % CardinalSegments
 	return cardinals[index]
 }
 
@@ -25,12 +35,12 @@ func CalculateOrientation(degrees float64) string {
 func (c *VectorEngine) ResolvePhysicalVector(lat, lon float64, timestamp int64) (float64, string) {
 	if c.IsStationary {
 		// Calculate artificial satellite orbital drift angle based on lat/lon + microsecond time
-		drift := math.Mod(float64(timestamp%3600000)/10000.0+lat*111.0+lon*111.0, 360.0)
+		drift := math.Mod(float64(timestamp%DriftTimestampMod)/DriftScaleFactor+lat*LatLonMultiplier+lon*LatLonMultiplier, DegreesInCircle)
 		return drift, CalculateOrientation(drift)
 	}
 
 	// Dynamic mobile fallback angle
-	heading := math.Mod(float64(timestamp%3600000)/10000.0, 360.0)
+	heading := math.Mod(float64(timestamp%DriftTimestampMod)/DriftScaleFactor, DegreesInCircle)
 	return heading, CalculateOrientation(heading)
 }
 

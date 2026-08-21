@@ -7,6 +7,12 @@ import (
 	"time"
 )
 
+const (
+	IPGeoAPIURL     = "http://ip-api.com/json/?fields=status,message,country,city,lat,lon"
+	IPGeoUserAgent  = "UniPass-CLI/1.0"
+	IPGeoTimeout    = 3 * time.Second
+)
+
 // IPGeoResponse represents the JSON response structure from ip-api.com
 type IPGeoResponse struct {
 	Status  string  `json:"status"`
@@ -17,41 +23,45 @@ type IPGeoResponse struct {
 	Message string  `json:"message"`
 }
 
-// FetchIPCoordinates queries public IP geolocation APIs as a fallback mechanism
-func FetchIPCoordinates() (*LocationDetails, error) {
+// IPProvider implements the GeolocationProvider interface
+type IPProvider struct{}
+
+// Resolve queries public IP geolocation APIs
+func (p *IPProvider) Resolve() (*GeolocationResult, error) {
 	client := &http.Client{
-		Timeout: 3 * time.Second,
+		Timeout: IPGeoTimeout,
 	}
 
-	req, err := http.NewRequest("GET", "http://ip-api.com/json/?fields=status,message,country,city,lat,lon", nil)
+	req, err := http.NewRequest("GET", IPGeoAPIURL, nil)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create IP geolocation request: %w", err)
+		return &GeolocationResult{Error: err}, err
 	}
 
-	req.Header.Set("User-Agent", "UniPass-CLI/1.0")
+	req.Header.Set("User-Agent", IPGeoUserAgent)
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("IP geolocation service unreachable: %w", err)
+		return &GeolocationResult{Error: err}, err
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("IP geolocation service returned status: %s", resp.Status)
+		return &GeolocationResult{Error: fmt.Errorf("status: %s", resp.Status)}, fmt.Errorf("status: %s", resp.Status)
 	}
 
 	var payload IPGeoResponse
 	if err := json.NewDecoder(resp.Body).Decode(&payload); err != nil {
-		return nil, fmt.Errorf("failed to decode IP location response: %w", err)
+		return &GeolocationResult{Error: err}, err
 	}
 
 	if payload.Status != "success" {
-		return nil, fmt.Errorf("IP geolocation failed: %s", payload.Message)
+		return &GeolocationResult{Error: fmt.Errorf("failed: %s", payload.Message)}, fmt.Errorf("failed: %s", payload.Message)
 	}
 
-	return &LocationDetails{
-		Lat:           payload.Lat,
-		Lon:           payload.Lon,
-		EarthDiameter: 12742000.0,
+	return &GeolocationResult{
+		Latitude:  payload.Lat,
+		Longitude: payload.Lon,
+		Source:    "ip",
+		Error:     nil,
 	}, nil
 }

@@ -5,46 +5,58 @@ import (
 	"fmt"
 )
 
+// Resolver executes the cascade based on configured providers and validator
 type Resolver struct {
-	EnableGPS      bool
-	EnableIP       bool
-	EnableMachineID bool
+	providers []GeolocationProvider
+	validator TrustValidator
+	rules     []PriorityRule
 }
 
-func NewResolver(enableGPS, enableIP, enableMachineID bool) *Resolver {
+// NewResolver creates a new Resolver with injected dependencies
+func NewResolver(providers []GeolocationProvider, validator TrustValidator, rules []PriorityRule) *Resolver {
 	return &Resolver{
-		EnableGPS:       enableGPS,
-		EnableIP:        enableIP,
-		EnableMachineID: enableMachineID,
+		providers: providers,
+		validator: validator,
+		rules:     rules,
 	}
 }
 
-// ResolveBestVector executes the cascade based on configured priorities
-func (gm *Resolver) ResolveBestVector() (string, string, error) {
-	// Priority 1: Hardware GPS (if enabled and available)
-	if gm.EnableGPS {
-		if gpsBytes, err := FetchDeviceGPS(); err == nil && len(gpsBytes) > 0 {
-			return "gps", string(gpsBytes), nil
-		}
-	}
+// ResolveBestVector executes the cascade based on configured priorities and settings
+func (r *Resolver) ResolveBestVector() (*GeolocationResult, error) {
+	var bestResult *GeolocationResult
+	highestPriority := -1
 
-	// Priority 2: IP Geolocation (with threat/VPN validation)
-	if gm.EnableIP {
-		if ipGeo, err := FetchIPCoordinates(); err == nil && ipGeo != nil {
-			ipGeoStr := fmt.Sprintf("%f,%f", ipGeo.Lat, ipGeo.Lon)
-			if EvaluateTrust(ipGeoStr) {
-				return "ip-trusted", ipGeoStr, nil
+	for _, provider := range r.providers {
+		result, err := provider.Resolve()
+		if err != nil || result == nil {
+			continue
+		}
+
+		// If it's an IP source, validate it
+		if result.Source == "ip" {
+			ipStr := fmt.Sprintf("%f,%f", result.Latitude, result.Longitude)
+			if !r.validator.Evaluate(ipStr) {
+				continue
 			}
 		}
-	}
 
-	// Priority 3: Isolated Machine/System Entropy Fallback
-	if gm.EnableMachineID {
-		machineEntropy := FetchSystemIdentity()
-		if machineEntropy != "" {
-			return "machine-fallback", machineEntropy, nil
+		// Evaluate rules
+		currentPriority := -1
+		for _, rule := range r.rules {
+			if p := rule.Evaluate(result); p > currentPriority {
+				currentPriority = p
+			}
+		}
+
+		if currentPriority > highestPriority {
+			highestPriority = currentPriority
+			bestResult = result
 		}
 	}
 
-	return "", "", errors.New("resolver: all priority cascade tiers exhausted or disabled")
+	if bestResult != nil {
+		return bestResult, nil
+	}
+
+	return nil, errors.New("resolver: all priority cascade tiers exhausted or disabled")
 }

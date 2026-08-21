@@ -6,16 +6,29 @@ import (
 	"fmt"
 	"os"
 
+	"unipass/pkg/config"
 	"unipass/pkg/health"
+	"unipass/pkg/locationiq"
 	"unipass/pkg/ui"
 )
 
 var version = "1.0.0"
 
 func main() {
+	// Load environment variables
+	_ = config.LoadEnv(".env")
+
 	healthFlag := flag.Bool("health", false, "Run system-wide environment diagnostics")
 	jsonFlag := flag.Bool("json", false, "Output health diagnostics as raw JSON")
 	flag.Parse()
+
+	apiKey := os.Getenv("LOCATIONIQ_API_KEY")
+	var locClient *locationiq.Client
+	if apiKey != "" {
+		locClient = locationiq.NewClient(apiKey)
+		// Location Client is ready to use
+		_ = locClient
+	}
 
 	if *healthFlag {
 		hc := health.NewHealthController()

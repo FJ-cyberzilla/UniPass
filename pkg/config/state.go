@@ -14,6 +14,9 @@ import (
 type ConfigState struct {
 	LastHealthCheck time.Time         `json:"last_health_check"`
 	Credentials     map[string]string `json:"credentials"`
+	City            string            `json:"city"`
+	Country         string            `json:"country"`
+	UseAutoGeo      bool              `json:"use_auto_geo"`
 }
 
 type ConfigManager struct {
@@ -74,6 +77,9 @@ func (cm *ConfigManager) SaveState(state *ConfigState, masterKey []byte) error {
 	metadataState := ConfigState{
 		LastHealthCheck: state.LastHealthCheck,
 		Credentials:     nil,
+		City:            state.City,
+		Country:         state.Country,
+		UseAutoGeo:      state.UseAutoGeo,
 	}
 
 	data, err := json.MarshalIndent(metadataState, "", "  ")

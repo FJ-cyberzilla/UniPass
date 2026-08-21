@@ -10,5 +10,6 @@ coverage.out
 # Runtime sensitive data and vaults
 *.vault
 *.json
+.env
 !go.mod
 !go.sum
