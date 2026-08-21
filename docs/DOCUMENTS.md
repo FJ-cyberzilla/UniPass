@@ -1,5 +1,8 @@
 # UniPass Engineering Blueprint: Anti-Heuristic Architecture & Geolocation Entropy
 
+**Design, Architecture, and Original Idea:** Fully belong to **FJ-cyberzilla** ([GitHub](https://github.com/FJ-cyberzilla)), **FJ™ Cybertronic Systems**.
+**Email:** [cyberzilla.systems@gmail.com](mailto:cyberzilla.systems@gmail.com)
+
 ---
 
 ## Table of Contents

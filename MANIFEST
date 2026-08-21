@@ -1,0 +1,29 @@
+# UniPass Project Manifest
+# Generated: 2026-08-21
+
+[Project Info]
+Name: UniPass
+Description: Zero-knowledge, cross-platform CLI cryptographic utility.
+Author: FJ-cyberzilla <cyberzilla.systems@gmail.com>
+License: MIT
+Repository: https://github.com/FJ-cyberzilla/UniPass
+Version: 1.0.0
+Attribution: The design, architecture, and original idea fully belong to FJ-cyberzilla [github], cyberzilla.systems@gmail.com, FJ™ Cybertronic Systems.
+
+[Primary Components]
+- cmd/unipass: Main entry point
+- pkg/config: Configuration and state management
+- pkg/crypto: Vault and recovery logic
+- pkg/generator: Entropy engine
+- pkg/geo: Geolocation-based entropy providers
+- pkg/health: System health monitoring
+- pkg/ui: Terminal UI and rendering
+
+[Key Files]
+- go.mod: Dependency management
+- Makefile: Build and test automation
+- build.sh: Cross-platform release script
+- README.md: Project overview
+- USERGUIDE.md: Usage instructions
+- LICENSE: License information
+- MANIFEST: This file

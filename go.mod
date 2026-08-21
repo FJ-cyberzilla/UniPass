@@ -1,3 +1,5 @@
+// Author: FJ-cyberzilla <cyberzilla.systems@gmail.com>
+// Design, architecture, and original idea fully belong to FJ-cyberzilla [github], FJ™ Cybertronic Systems.
 module unipass
 
 go 1.25.0
