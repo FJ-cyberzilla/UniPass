@@ -21,8 +21,14 @@ const (
 // Contextual Aliases
 const ColorStatusText = ColorPurple
 
-// Purple-to-Blue Gradient Array
+// Purple-to-Blue Gradient Array (Refined)
 var BarGradient = []string{
-	"\033[38;5;129m", "\033[38;5;128m", "\033[38;5;127m", "\033[38;5;126m",
-	"\033[38;5;93m", "\033[38;5;63m", "\033[38;5;33m", "\033[38;5;27m",
+	"\033[38;5;129m", // Deep Purple
+	"\033[38;5;99m",  // Violet
+	"\033[38;5;93m",  // Dark Violet
+	"\033[38;5;63m",  // Light Blue-Violet
+	"\033[38;5;33m",  // Deep Blue
+	"\033[38;5;27m",  // Vivid Blue
+	"\033[38;5;26m",  // Rich Blue
+	"\033[38;5;25m",  // Darker Blue
 }
