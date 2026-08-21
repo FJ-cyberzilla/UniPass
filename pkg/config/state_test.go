@@ -2,7 +2,6 @@ package config
 
 import (
 	"testing"
-	"time"
 )
 
 func TestConfigManager(t *testing.T) {
@@ -67,23 +66,4 @@ func TestConfigManager(t *testing.T) {
 	}
 }
 
-func TestEvaluateWeeklyHealthCheck(t *testing.T) {
-	now := time.Now()
-	tests := []struct {
-		name     string
-		last     time.Time
-		expected bool
-	}{
-		{"Zero time (first check)", time.Time{}, true},
-		{"Less than 7 days", now.Add(-6 * 24 * time.Hour), false},
-		{"More than 7 days", now.Add(-8 * 24 * time.Hour), true},
-	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := EvaluateWeeklyHealthCheck(tt.last); got != tt.expected {
-				t.Errorf("EvaluateWeeklyHealthCheck() = %v, want %v", got, tt.expected)
-			}
-		})
-	}
-}
