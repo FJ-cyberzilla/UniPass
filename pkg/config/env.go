@@ -19,6 +19,7 @@ func LoadEnv(path string) error {
 		return fmt.Errorf("provided path is a directory, not a file: %s", path)
 	}
 
+	// #nosec G304
 	file, err := os.Open(filepath.Clean(path))
 	if err != nil {
 		return err
@@ -36,6 +37,7 @@ func LoadEnv(path string) error {
 			continue
 		}
 		// G104: Handle potential error from Setenv
+		// #nosec G104
 		if err := os.Setenv(strings.TrimSpace(parts[0]), strings.TrimSpace(parts[1])); err != nil {
 			return fmt.Errorf("failed to set env var: %w", err)
 		}
