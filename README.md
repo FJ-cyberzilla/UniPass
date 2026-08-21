@@ -1,6 +1,14 @@
 # UniPass
 
-UniPass is a zero-knowledge, cross-platform CLI cryptographic utility designed with a strict "no-passive-naming" and "zero-beaconing" security model. It derives high-precision entropy locally using astronomical and system-level constants, ensuring the application behaves entirely like a benign mathematical utility.
+[![UniPass CI/CD Pipeline](https://github.com/FJ-cyberzilla/UniPass/actions/workflows/ci-release.yml/badge.svg)](https://github.com/FJ-cyberzilla/UniPass/actions/workflows/ci-release.yml)
+
+### UniPass is a zero-knowledge, 
+cross-platform CLI 
+cryptographic utility 
+
+designed with a strict "no-passive-naming" and "zero-beaconing" security model.
+
+It derives high-precision entropy locally using astronomical and system-level constants, ensuring the application behaves entirely like a benign mathematical utility.
 
 ---
 
@@ -121,4 +129,4 @@ The `docs/` folder contains several Mermaid (`.mmd`) diagrams mapping the intern
 *   **`INTERACTION_SEQUENCE.mmd`**: The sequence of events during a standard command execution.
 
 ---
-*For further assistance, please consult the project's `README.md` or contact the maintainers.*
+*For further assistance, please consult the project's Author.
