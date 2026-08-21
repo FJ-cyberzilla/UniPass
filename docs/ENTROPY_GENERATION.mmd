@@ -1,0 +1,57 @@
+flowchart TD
+    START([User Request Password]) --> TIMESTAMP[Get Current Timestamp]
+    TIMESTAMP --> GEOGRAPHIC[Get Geographic Data]
+    
+    subgraph GEO["Geographic Layer (pkg/geo)"]
+        GEOGRAPHIC --> LATLON[Extract Latitude/Longitude]
+        LATLON --> CALC["LocationDetails Methods"]
+        CALC --> EOT[Equation of Time<br/>Global daily variation]
+        CALC --> DEC[Solar Declination<br/>Global seasonal variation]
+        CALC --> ELEV[Sun Elevation<br/>Location & time specific]
+        CALC --> AZIM[Sun Azimuth<br/>Location & time specific]
+        CALC --> DIAM[Effective Diameter<br/>Latitude-specific]
+    end
+
+    subgraph VEC["Vector Layer (pkg/geo/vector.go)"]
+        GEOGRAPHIC --> VECTOR[VectorEngine]
+        VECTOR --> RESOLVE[ResolvePhysicalVector]
+        RESOLVE --> DEGREES[Angle Degrees]
+        RESOLVE --> BEARING[Compass Bearing]
+        DEGREES --> FORMAT[FormatVectorSeed]
+        BEARING --> FORMAT
+    end
+
+    subgraph GEN["Generator Layer (pkg/generator)"]
+        EOT --> AGGREGATE[Aggregate Entropy]
+        DEC --> AGGREGATE
+        ELEV --> AGGREGATE
+        AZIM --> AGGREGATE
+        DIAM --> AGGREGATE
+        FORMAT --> AGGREGATE
+        TIMESTAMP --> AGGREGATE
+        NAME[User Name] --> VALIDATE[ValidateName]
+        VALIDATE --> AGGREGATE
+        AGGREGATE --> RAW["Raw Seed String"]
+        RAW --> HASH["SHA-256"]
+        HASH --> HEX["Hex Encoding"]
+    end
+
+    subgraph OUT["Output"]
+        HEX --> FULL["Full 64-char Password"]
+        HEX --> SHORT["Short 12-char Password"]
+    end
+
+    FULL --> END([Return Password])
+    SHORT --> END
+
+    classDef startEnd fill:#2d3b4c,stroke:#61afef,color:#abb2bf
+    classDef geo fill:#3e4452,stroke:#98c379,color:#abb2bf
+    classDef vector fill:#2c323c,stroke:#e5c07b,color:#abb2bf
+    classDef gen fill:#3e4452,stroke:#e06c75,color:#abb2bf
+    classDef output fill:#2d3b4c,stroke:#56b6c2,color:#abb2bf
+    
+    class START,END startEnd
+    class EOT,DEC,ELEV,AZIM,DIAM geo
+    class VECTOR,RESOLVE,DEGREES,BEARING,FORMAT vector
+    class VALIDATE,AGGREGATE,RAW,HASH,HEX gen
+    class FULL,SHORT output

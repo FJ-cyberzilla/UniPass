@@ -1,0 +1,70 @@
+flowchart LR
+    subgraph Input["User Input"]
+        NAME[User Name]
+        LOC[Location Request]
+    end
+
+    subgraph Location["Location Resolution"]
+        GPS[GPS<br/>Coordinates]
+        IP[IP Geolocation]
+        SYS[System Location]
+        NOM[Nominatim API]
+    end
+
+    subgraph Astronomy["Astronomical Calculations"]
+        EOT[Equation of Time]
+        DEC[Solar Declination]
+        ELEV[Sun Elevation]
+        AZIM[Sun Azimuth]
+        DIAM[Effective Diameter]
+    end
+
+    subgraph Entropy["Entropy Aggregation"]
+        VECTOR[Vector Engine]
+        TIMESTAMP[Unix Timestamp]
+        COMBINE[Seed Combination]
+        HASH[SHA-256 Hash]
+    end
+
+    subgraph Output["Password Generation"]
+        FULL[64-char Password]
+        SHORT[12-char Password]
+    end
+
+    NAME --> Entropy
+    LOC --> Location
+    Location --> GPS
+    Location --> IP
+    Location --> SYS
+    Location --> NOM
+    GPS --> Astronomy
+    IP --> Astronomy
+    SYS --> Astronomy
+    NOM --> Astronomy
+    Astronomy --> EOT
+    Astronomy --> DEC
+    Astronomy --> ELEV
+    Astronomy --> AZIM
+    Astronomy --> DIAM
+    EOT --> Entropy
+    DEC --> Entropy
+    ELEV --> Entropy
+    AZIM --> Entropy
+    DIAM --> Entropy
+    VECTOR --> Entropy
+    TIMESTAMP --> Entropy
+    COMBINE --> HASH
+    HASH --> FULL
+    HASH --> SHORT
+
+    classDef input fill:#2d3b4c,stroke:#61afef,color:#abb2bf
+    classDef location fill:#3e4452,stroke:#98c379,color:#abb2bf
+    classDef astronomy fill:#2c323c,stroke:#e5c07b,color:#abb2bf
+    classDef entropy fill:#3e4452,stroke:#e06c75,color:#abb2bf
+    classDef output fill:#2d3b4c,stroke:#56b6c2,color:#abb2bf
+    
+    class NAME,LOC input
+    class GPS,IP,SYS,NOM location
+    class EOT,DEC,ELEV,AZIM,DIAM astronomy
+    class VECTOR,TIMESTAMP,COMBINE,HASH entropy
+    class FULL,SHORT output

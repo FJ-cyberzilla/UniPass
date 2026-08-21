@@ -1,0 +1,10 @@
+# LEGAL DISCLAIMER
+
+UniPass is provided "as-is" and without any warranty of any kind, express or implied. 
+
+1. **No Liability:** The authors and contributors shall not be held liable for any damages, including but not limited to direct, indirect, incidental, or consequential damages arising from the use or inability to use this software.
+2. **User Responsibility:** Users are solely responsible for the security of their generated credentials, master seeds, and vault files. 
+3. **Security Risks:** While UniPass is designed with a zero-knowledge security model, no software is entirely infallible. Users should exercise caution when handling sensitive data.
+4. **Compliance:** Users are responsible for ensuring that the use of this software complies with all applicable local, national, and international laws and regulations.
+
+By using UniPass, you acknowledge and accept these terms.

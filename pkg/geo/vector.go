@@ -5,8 +5,8 @@ import (
 	"math"
 )
 
-// ConceptEngine decides physical orientation state strategy
-type ConceptEngine struct {
+// VectorEngine decides physical orientation state strategy
+type VectorEngine struct {
 	IsStationary bool
 }
 
@@ -22,7 +22,7 @@ func CalculateOrientation(degrees float64) string {
 }
 
 // ResolvePhysicalVector computes orientation vector considering satellite jitter
-func (c *ConceptEngine) ResolvePhysicalVector(lat, lon float64, timestamp int64) (float64, string) {
+func (c *VectorEngine) ResolvePhysicalVector(lat, lon float64, timestamp int64) (float64, string) {
 	if c.IsStationary {
 		// Calculate artificial satellite orbital drift angle based on lat/lon + microsecond time
 		drift := math.Mod(float64(timestamp%3600000)/10000.0+lat*111.0+lon*111.0, 360.0)

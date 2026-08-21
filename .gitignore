@@ -1,12 +1,14 @@
-# Binaries & Build Output
-bin/
-dist/
-unipass
-*.exe
+# Binaries and build outputs
+/bin/
+/dist/
+/unipass
 
-# Test Coverage
+# Logs and test coverage
+*.log
 coverage.out
 
-# IDE & OS Files
-.DS_Store
-*.swp
+# Runtime sensitive data and vaults
+*.vault
+*.json
+!go.mod
+!go.sum

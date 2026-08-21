@@ -1,0 +1,59 @@
+sequenceDiagram
+    actor User
+    participant CLI as Command Line
+    participant UI as UI Package
+    participant GEN as Generator
+    participant GEO as Geo Package
+    participant API as Nominatim API
+    participant ASTR as Astronomical Calc
+    participant HASH as SHA-256
+
+    User->>CLI: Execute unipass
+    CLI->>UI: Initialize UI
+    UI->>UI: Display Banner
+    CLI->>GEO: Get Location
+    
+    alt IP-based
+        GEO->>API: Request IP geolocation
+        API-->>GEO: Return IP data
+    else GPS-based
+        GEO->>GEO: Read GPS coordinates
+    else System-based
+        GEO->>GEO: Get system location
+    end
+    
+    GEO->>API: Request city/lat/lon
+    API-->>GEO: Return coordinates
+    
+    alt Manual Entry
+        GEO->>User: Prompt for city/country
+        User-->>GEO: Enter location
+        GEO->>API: Geocode location
+        API-->>GEO: Return coordinates
+    end
+    
+    GEO->>ASTR: Calculate astronomical values
+    ASTR-->>GEO: Equation of Time
+    ASTR-->>GEO: Solar Declination
+    ASTR-->>GEO: Sun Elevation
+    ASTR-->>GEO: Sun Azimuth
+    ASTR-->>GEO: Effective Diameter
+    
+    GEO->>GEO: Format vector seed
+    GEO-->>GEN: Return LocationDetails
+    
+    CLI->>User: Prompt for name
+    User-->>CLI: Enter name
+    CLI->>GEN: Validate name
+    
+    GEN->>GEN: Aggregate all entropy
+    GEN->>HASH: SHA-256 hash
+    
+    alt Full Password
+        HASH-->>GEN: 64-char hash
+    else Short Password
+        HASH-->>GEN: 12-char prefix
+    end
+    
+    GEN-->>CLI: Return password
+    CLI-->>User: Display password

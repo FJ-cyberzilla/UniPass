@@ -30,8 +30,8 @@ func TestCalculateOrientation(t *testing.T) {
 	}
 }
 
-func TestConceptEngine_ResolvePhysicalVector(t *testing.T) {
-	stationaryEngine := &ConceptEngine{IsStationary: true}
+func TestVectorEngine_ResolvePhysicalVector(t *testing.T) {
+	stationaryEngine := &VectorEngine{IsStationary: true}
 	drift, bearing := stationaryEngine.ResolvePhysicalVector(51.5074, -0.1278, 1787302400000000)
 	if bearing == "" {
 		t.Error("Expected non-empty bearing string for stationary engine")
@@ -40,7 +40,7 @@ func TestConceptEngine_ResolvePhysicalVector(t *testing.T) {
 		t.Errorf("Expected drift angle between 0 and 360, got %.2f", drift)
 	}
 
-	mobileEngine := &ConceptEngine{IsStationary: false}
+	mobileEngine := &VectorEngine{IsStationary: false}
 	mAngle, mBearing := mobileEngine.ResolvePhysicalVector(51.5074, -0.1278, 1787302400000000)
 	if mBearing == "" {
 		t.Error("Expected non-empty bearing string for mobile engine")

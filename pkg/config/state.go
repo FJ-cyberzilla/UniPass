@@ -21,7 +21,16 @@ type ConfigManager struct {
 	vault      *crypto.Vault
 }
 
+// NewConfigManager initializes paths using OS user config directory if baseDir is empty
 func NewConfigManager(baseDir string) *ConfigManager {
+	if baseDir == "" {
+		userConfig, err := os.UserConfigDir()
+		if err != nil {
+			userConfig = "." // Fallback to current directory if unavailable
+		}
+		baseDir = filepath.Join(userConfig, "unipass")
+	}
+
 	configPath := filepath.Join(baseDir, "unipass.json")
 	vaultPath := filepath.Join(baseDir, "credentials.vault")
 	return &ConfigManager{

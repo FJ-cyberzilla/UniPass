@@ -1,0 +1,60 @@
+graph TB
+    subgraph "User Interface Layer"
+        UI[UI Package<br/>Terminal Rendering]
+        BANNER[Banner Display]
+        THEME[Theme Controller]
+    end
+
+    subgraph "Application Layer"
+        CMD[Command Line<br/>Entry Point]
+        CONFIG[Config Package<br/>State Management]
+        HEALTH[Health Package<br/>System Monitoring]
+    end
+
+    subgraph "Core Logic Layer"
+        GEN[Generator Package<br/>Password Engine]
+        CRYPTO[Crypto Package<br/>Vault & Recovery]
+        VALIDATOR[Name Validation]
+        HASH[SHA-256 Hashing]
+    end
+
+    subgraph "Data & Entropy Layer"
+        GEO[Geo Package<br/>Geographic Data]
+        ASTRONOMY[Astronomical Calculations<br/>- Equation of Time<br/>- Solar Declination<br/>- Sun Elevation<br/>- Sun Azimuth<br/>- Effective Diameter]
+        LOCATION[Location Sources<br/>- GPS<br/>- IP<br/>- System]
+        VECTOR[Vector Engine<br/>Entropy Generation]
+        API[External APIs<br/>Nominatim]
+    end
+
+    subgraph "External Data Sources"
+        EXTERNAL[External Services<br/>Geocoding APIs]
+    end
+
+    UI --> CMD
+    CMD --> CONFIG
+    CMD --> GEN
+    CMD --> UI
+    CONFIG --> GEO
+    GEO --> LOCATION
+    GEO --> ASTRONOMY
+    GEO --> VECTOR
+    LOCATION --> API
+    API --> EXTERNAL
+    GEN --> VALIDATOR
+    GEN --> HASH
+    GEN --> GEO
+    GEN --> CRYPTO
+    HEALTH --> CONFIG
+    UI --> THEME
+    UI --> BANNER
+    UI --> HEALTH
+
+    classDef primary fill:#2d3b4c,stroke:#61afef,color:#abb2bf
+    classDef secondary fill:#3e4452,stroke:#98c379,color:#abb2bf
+    classDef entropy fill:#2c323c,stroke:#e5c07b,color:#abb2bf
+    classDef external fill:#2d3b4c,stroke:#e06c75,color:#abb2bf
+    
+    class CMD,CONFIG,GEN,CRYPTO,UI primary
+    class VALIDATOR,HASH,THEME,BANNER,HEALTH secondary
+    class GEO,ASTRONOMY,LOCATION,VECTOR entropy
+    class API,EXTERNAL external

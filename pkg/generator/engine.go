@@ -24,7 +24,7 @@ func ValidateName(name string) error {
 
 // GenerateFull produces a complete 64-char SHA-256 password string
 func GenerateFull(name string, loc geo.LocationDetails, timestamp int64) string {
-	concept := &geo.ConceptEngine{IsStationary: true}
+	concept := &geo.VectorEngine{IsStationary: true}
 	degrees, bearing := concept.ResolvePhysicalVector(loc.Lat, loc.Lon, timestamp)
 	vectorSeed := geo.FormatVectorSeed(loc.Lat, loc.Lon, degrees, bearing)
 
