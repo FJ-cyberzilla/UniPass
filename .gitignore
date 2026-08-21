@@ -1,0 +1,12 @@
+# Binaries & Build Output
+bin/
+dist/
+unipass
+*.exe
+
+# Test Coverage
+coverage.out
+
+# IDE & OS Files
+.DS_Store
+*.swp

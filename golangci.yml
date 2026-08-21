@@ -1,0 +1,21 @@
+run:
+  timeout: 5m
+  modules-download-mode: readonly
+
+linters:
+  enable:
+    - errcheck     # Checks unhandled errors
+    - gosimple     # Simplifies Go code structures
+    - govets       # Catches common bugs via go vet
+    - ineffassign  # Detects unused assignments
+    - staticcheck  # Advanced static code analysis
+    - gocyclo      # Enforces cyclomatic complexity rules
+    - gocognit     # Enforces cognitive complexity rules
+    - gosec        # Security analyzer
+    - revive       # Fast, configurable linter
+
+linters-settings:
+  gocyclo:
+    min-complexity: 10
+  gocognit:
+    min-complexity: 15
