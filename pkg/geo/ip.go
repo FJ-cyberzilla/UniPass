@@ -8,9 +8,9 @@ import (
 )
 
 const (
-	IPGeoAPIURL     = "http://ip-api.com/json/?fields=status,message,country,city,lat,lon"
-	IPGeoUserAgent  = "UniPass-CLI/1.0"
-	IPGeoTimeout    = 3 * time.Second
+	IPGeoAPIURL    = "http://ip-api.com/json/?fields=status,message,country,city,lat,lon"
+	IPGeoUserAgent = "UniPass-CLI/1.0"
+	IPGeoTimeout   = 3 * time.Second
 )
 
 // IPGeoResponse represents the JSON response structure from ip-api.com

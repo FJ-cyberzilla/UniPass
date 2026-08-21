@@ -14,10 +14,10 @@ func TestConfigManager(t *testing.T) {
 	}
 
 	tests := []struct {
-		name      string
-		state     *ConfigState
-		key       []byte
-		wantErr   bool
+		name    string
+		state   *ConfigState
+		key     []byte
+		wantErr bool
 	}{
 		{
 			"Valid state save/load",
@@ -65,5 +65,3 @@ func TestConfigManager(t *testing.T) {
 		})
 	}
 }
-
-

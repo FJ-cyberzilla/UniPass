@@ -29,7 +29,7 @@ func TestBarGradient(t *testing.T) {
 	if len(BarGradient) != 8 {
 		t.Errorf("BarGradient length = %d, want 8", len(BarGradient))
 	}
-	
+
 	// Check if all are non-empty
 	for i, color := range BarGradient {
 		if color == "" {

@@ -13,17 +13,17 @@ type Client struct {
 }
 
 type SearchResult struct {
-	PlaceID     string `json:"place_id"`
-	Licence     string `json:"licence"`
-	OSMType     string `json:"osm_type"`
-	OSMID       string `json:"osm_id"`
+	PlaceID     string   `json:"place_id"`
+	Licence     string   `json:"licence"`
+	OSMType     string   `json:"osm_type"`
+	OSMID       string   `json:"osm_id"`
 	BoundingBox []string `json:"boundingbox"`
-	Lat         string `json:"lat"`
-	Lon         string `json:"lon"`
-	DisplayName string `json:"display_name"`
-	Class       string `json:"class"`
-	Type        string `json:"type"`
-	Importance  float64 `json:"importance"`
+	Lat         string   `json:"lat"`
+	Lon         string   `json:"lon"`
+	DisplayName string   `json:"display_name"`
+	Class       string   `json:"class"`
+	Type        string   `json:"type"`
+	Importance  float64  `json:"importance"`
 }
 
 func NewClient(apiKey string) *Client {

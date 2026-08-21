@@ -17,10 +17,10 @@ func TestVault(t *testing.T) {
 	}
 
 	tests := []struct {
-		name      string
-		data      []byte
-		key       []byte
-		wantErr   bool
+		name    string
+		data    []byte
+		key     []byte
+		wantErr bool
 	}{
 		{"Valid data", []byte("secret"), key, false},
 		{"Empty data", []byte(""), key, false},

@@ -26,7 +26,7 @@ func TestFetchCoordinatesMockServer(t *testing.T) {
 
 func TestAstronomicalMethods(t *testing.T) {
 	loc := &LocationDetails{Lat: 40.7128, Lon: -74.0060} // New York
-	timestamp := int64(1724250000) // Arbitrary timestamp
+	timestamp := int64(1724250000)                       // Arbitrary timestamp
 
 	eot := loc.EquationOfTime(timestamp)
 	if eot == 0 {

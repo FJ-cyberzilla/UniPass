@@ -6,10 +6,10 @@ import (
 )
 
 const (
-	DegreesInCircle = 360.0
-	CardinalSegments = 8
-	SegmentDegrees  = 45.0
-	SegmentOffset   = 22.5
+	DegreesInCircle   = 360.0
+	CardinalSegments  = 8
+	SegmentDegrees    = 45.0
+	SegmentOffset     = 22.5
 	DriftTimestampMod = 3600000
 	DriftScaleFactor  = 10000.0
 	LatLonMultiplier  = 111.0

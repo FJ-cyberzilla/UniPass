@@ -39,12 +39,12 @@ func (r *MockRule) Evaluate(result *GeolocationResult) int {
 
 func TestResolveBestVector(t *testing.T) {
 	tests := []struct {
-		name        string
-		providers   []GeolocationProvider
-		validator   TrustValidator
-		rules       []PriorityRule
-		wantSource  string
-		wantErr     bool
+		name       string
+		providers  []GeolocationProvider
+		validator  TrustValidator
+		rules      []PriorityRule
+		wantSource string
+		wantErr    bool
 	}{
 		{
 			name: "Happy path - Highest priority wins",
